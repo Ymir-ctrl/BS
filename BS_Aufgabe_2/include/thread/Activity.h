@@ -84,32 +84,39 @@ public:
 	 */
 	void changeTo(State state)
 	{
+		state = s;
 	}
 
 	// Ausführungszustand abfragen.
 	bool isBlocked()
 	{
+		return state == BLOCKED;
 	}
 
 	bool isReady()
 	{
+		return state == READY;
 	}
 
 	bool isRunning()
 	{
+		return state == RUNNING;
 	}
 
 	bool isZombie()
 	{
+		return state == ZOMBIE;
 	}
 
     // alle Klassen mit virtuellen Destruktoren brauchen die
     // folgende Operator-Ueberladung:
-    static void operator delete(void* p) {}
+    static void operator delete(void* p) {
+    	::operator delete(p);
+    }
 
 
 private:
-
+	State state
 
 };
 
