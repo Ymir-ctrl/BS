@@ -77,6 +77,5 @@ extern "C" int main()
 
 	// los geht's
 	anton.body();
-
 	return 0;
 }

@@ -1,8 +1,5 @@
 #include "thread/Scheduler.h"
 
-Scheduler::Scheduler() {
-
-}
 
 // Einfuegen eines neuen Elements in die Ready-Liste.
 // Schedulable erbt von Chain, daher ist Typkonvertierung nicht nötig
@@ -24,8 +21,4 @@ void Scheduler::reschedule() {
     if (to != nullptr) {
         activate(to);
     }
-}
-
-void Scheduler::activate(Schedulable* to) {
-    to ->activate();
 }

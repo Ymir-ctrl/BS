@@ -27,7 +27,7 @@ switchContext:
     mov ecx, [esp + 8]     ; ecx = &to
 
 	push ebp
-    	push edi
+    push edi
 	push esi
    	push ebx
 
