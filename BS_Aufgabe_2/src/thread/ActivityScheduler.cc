@@ -10,7 +10,7 @@ ActivityScheduler::ActivityScheduler() {
  *  Wird nur einmal aufgerufen.
  */
 void ActivityScheduler::start(Activity* act) {
-    act->setState(READY);
+    act->changeTo(Activity::READY);
     schedule(act);
     activate(act);
 }
@@ -21,7 +21,7 @@ void ActivityScheduler::start(Activity* act) {
  */
 void ActivityScheduler::suspend() {
     if (active != nullptr) {
-        active->setState(BLOCKED);
+        active->changeTo(Activity::BLOCKED);
         reschedule();
     }
 }
@@ -34,10 +34,10 @@ void ActivityScheduler::suspend() {
  */
 void ActivityScheduler::kill(Activity* act) {
     if (active == act) {
-        active->setState(ZOMBIE);
+        active->changeTo(Activity::ZOMBIE);
         reschedule();
     } else {
-        act->setState(ZOMBIE);
+        act->changeTo(Activity::ZOMBIE);
         remove(act);
     }
 
@@ -45,7 +45,7 @@ void ActivityScheduler::kill(Activity* act) {
  * und Wechsel zum naechsten lauffaehigen Prozess
  */    
 void ActivityScheduler::exit() {
-    active ->setState(ZOMBIE);
+    active ->changeTo(Activity::ZOMBIE);
     reschedule();
 }
 
@@ -56,14 +56,14 @@ void ActivityScheduler::exit() {
  */
 void ActivityScheduler::activate(Schedulable* to) {
     if (active != nullptr &&
-    active->getState() != BLOCKED &&
-    active->getState() != ZOMBIE) {
+    active->isBlocked() == 0 &&
+    active->isZombie() == 0) {
     // setzt den Zustand auf READY und fügt ihn in die Readylist ein
-    active->setState(READY)
+    active->setState(Activity::READY)
     Scheduler::schedule(active);
     }
 
-    to->setState(RUNNING);
+    to->changeTo(Activity::RUNNING);
     Dispatcher::dispatch(to);
 }
 
