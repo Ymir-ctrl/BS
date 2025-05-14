@@ -25,7 +25,12 @@ int CgaChannel::write(const char* data, int size) {
             case '\n': {
                 int col, row;
                 getCursor(col, row);
-                setCursor(0, row + 1);
+                ++row;
+                if (row >= ROWS) {
+                    scroll();
+                    row = ROWS-1;
+                }
+                setCursor(0, row);
                 break;
             }
 
