@@ -82,7 +82,7 @@ public:
 	/* Ändern des Ausführungszustandes. Diese Methode sollte nur vom
 	 * Scheduler verwendet werden.
 	 */
-	void changeTo(State state)
+	void changeTo(State s)
 	{
 		state = s;
 	}
@@ -116,7 +116,7 @@ public:
 
 
 private:
-	State state
+	State state;
 
 };
 

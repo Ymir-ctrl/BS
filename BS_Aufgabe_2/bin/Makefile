@@ -31,6 +31,7 @@ STARTUP_S = \
 
 MACHINE_S = \
 	io/ports.asm \
+	thread/switchContext.asm \
 
 SYSTEM_C = \
 	lib/tools.c
@@ -42,7 +43,12 @@ SYSTEM_CC = \
 	device/CgaScreen.cc \
 	device/CgaChar.cc \
 	io/PrintStream.cc \
-	main.cc \
+	thread/Activity.cc \
+	thread/Scheduler.cc\
+	# thread/Dispatcher.cpp \
+	thread/ActivityScheduler.cc \
+	lib/Queue.cc \
+	mainCo.cc \
 
 
 ##############################################################################
