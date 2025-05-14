@@ -4,7 +4,7 @@
 /*
  * Coroutine:
  * Diese Klasse implementiert Coroutinen, welche die Basis
- * für alle Arten von Prozessen in Co-Stubs sind.
+ * fï¿½r alle Arten von Prozessen in Co-Stubs sind.
  *
  *	Anmerkung: wir verwenden ein objektorientiertes
  *	Coroutinen-Modell, daher ist diese Klasse abstrakt.
@@ -15,12 +15,12 @@
  *
  */
 
-
 /* Diese Deklaration verweist auf die von Euch zu
  * implementierende Assemblerprozedur "switchContext".
  */
-extern "C" {
-	void switchContext(void*& from, void*& to);
+extern "C"
+{
+	void switchContext(void *&from, void *&to);
 }
 /* switchContext hat die Aufgabe, die Kontrolle
  * vom Stack der Coroutine "from" auf den Stack der
@@ -39,25 +39,25 @@ extern "C" {
  * wir einfach eine "ret" Instruktion aus, die dazu fuehrt,
  * dass die Coroutine "to" an der Stelle weiterlaeuft,
  * an der sie das letzte mal "switchContext" aufgerufen hat.
- * Für Coroutinen die zum ersten mal aktiviert werden, muss
+ * Fï¿½r Coroutinen die zum ersten mal aktiviert werden, muss
  * deshalb ein Stackframe existieren, was gleich aussieht mit
  * dem einer Coroutine die "switchContext" aufgerufen hat.
  */
 
-
-class Coroutine {
+class Coroutine
+{
 public:
 	/* Aufsetzen einer neuen Coroutine.
-	*/
-	explicit Coroutine(void* tos = 0)
+	 */
+	explicit Coroutine(void *tos = 0)
 	{
-		setup(tos);
+		setup(tos); // top of Stack
 	}
 
 	/* Kontrolltransfer von dieser Coroutine zu "next"
 	 * Die eigentliche Arbeit erledigt "switchContext"
 	 */
-	void resume(Coroutine* next)
+	void resume(Coroutine *next)
 	{
 		switchContext(this->sp, next->sp);
 	}
@@ -74,7 +74,6 @@ public:
 	virtual void exit() = 0;
 
 private:
-
 	/* Diese Funktion hat nur die Aufgabe
 	 * den Rumpf der uebergebenen Coroutine aufzurufen
 	 * und nach der Rueckkehr exit() aufzurufen,
@@ -84,18 +83,48 @@ private:
 	 * Beachte, das "startup" als "static deklariert ist
 	 * und deshalb keinen impliziten "this"-Zeiger uebergeben bekommt.
 	 */
-	static void startup(Coroutine* obj);
+	static void startup(Coroutine *obj)
+	{
+		obj->body();
+		obj->exit();
+	};
 
 	/* Aufsetzen einer neuen Coroutine.
 	 * Der Parameter "tos" (top of stack) ist der
 	 * initiale Stackpointerwert fuer die neue Coroutine
 	 * ACHTUNG: tos kann NULL sein (siehe Constructor)!
 	 */
-	void setup(void* tos);
+	void setup(void *tos)
+	{
+		if (tos == nullptr)  // wenn tos = 0 
+		{
+			sp = nullptr;
+			return;
+		}
 
-	void* sp; // Der gerettete Stackpointer
+		// Reserviere den Platz fuer die Ruecksprungadresse und gerettete Register
+		void **stack = static_cast<void **>(tos);
 
+		// Platz fuer Register reservieren
 
+		stack -= 6; // Platz fuer exit, saved ebp, ebx, esi, edi  (anzahl der Register + Return + Einstiegspunkt)
+		// eax und edx werden fuer Stack benoetigt
+		
+		// Simuliere RÃ¼cksprungadresse fuer "ret" anweisung
+		stack[0] = nullptr;										  // fue fruehzeitiges "ret"
+		stack[1] = reinterpret_cast<void *>(&Coroutine::startup); // Einstiegspunkt
+
+		// Initialisiere gerettete Register mit Null-Werten
+		stack[2] = nullptr; // ebp
+		stack[3] = nullptr; // ebx
+		stack[4] = nullptr; // esi
+		stack[5] = nullptr; // edi
+
+		// Setze Stackpointer
+		sp = stack + 1; // zeigt auf "fake return address", die startup(( aufruft
+	}
+
+	void *sp; // Der gerettete Stackpointer
 };
 
 #endif
