@@ -1,8 +1,6 @@
 #include "thread/ActivityScheduler.h"
 
-ActivityScheduler::ActivityScheduler() {
-    
-}
+ActivityScheduler scheduler;
 
 /**  
  *  Setzt den Zustand der Aktivität danne erst auf READY, damit sie
@@ -63,8 +61,9 @@ void ActivityScheduler::activate(Schedulable* to) {
     Scheduler::schedule(active);
     }
 
-    to->changeTo(Activity::RUNNING);
-    Dispatcher::dispatch(to);
+    Activity* activityTo = static_cast<Activity*>(to);
+    activityTo->changeTo(Activity::RUNNING);
+    Dispatcher::dispatch(activityTo);
 }
 
 }
