@@ -40,4 +40,31 @@ void ActivityScheduler::kill(Activity* act) {
         act->setState(ZOMBIE);
         remove(act);
     }
+
+/* Terminieren des aktiven Prozesses,
+ * und Wechsel zum naechsten lauffaehigen Prozess
+ */    
+void ActivityScheduler::exit() {
+    active ->setState(ZOMBIE);
+    reschedule();
+}
+
+/* Der aktive Prozess ist, sofern er sich nicht im Zustand
+ * Blocked oder Zombie befindet, wieder auf die Ready-Liste
+ * zu setzen. Danach ist "to" mittels dispatch die Kontrolle
+ * zu übergeben.
+ */
+void ActivityScheduler::activate(Schedulable* to) {
+    if (active != nullptr &&
+    active->getState() != BLOCKED &&
+    active->getState() != ZOMBIE) {
+    // setzt den Zustand auf READY und fügt ihn in die Readylist ein
+    active->setState(READY)
+    Scheduler::schedule(active);
+    }
+
+    to->setState(RUNNING);
+    Dispatcher::dispatch(to);
+}
+
 }

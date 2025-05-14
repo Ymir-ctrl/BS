@@ -56,6 +56,8 @@ protected:
 
 private:
 
+Activity* active = nullptr;
+
 };
 
 extern ActivityScheduler scheduler;
