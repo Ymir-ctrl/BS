@@ -101,30 +101,37 @@ private:
 			sp = nullptr;
 			return;
 		}
-
-		// Reserviere den Platz fuer die Ruecksprungadresse und gerettete Register
-		void **stack = static_cast<void **>(tos);
-
-		// Platz fuer Register reservieren
-
-		stack -= 6; // Platz fuer exit, saved ebp, ebx, esi, edi  (anzahl der Register + Return + Einstiegspunkt)
-		// eax und edx werden fuer Stack benoetigt
 		
-		// Simuliere Rücksprungadresse fuer "ret" anweisung
-		stack[0] = nullptr;										  // fue fruehzeitiges "ret"
-		stack[1] = reinterpret_cast<void *>(&Coroutine::startup); // Einstiegspunkt
-
-		// Initialisiere gerettete Register mit Null-Werten
-		stack[2] = nullptr; // ebp
-		stack[3] = nullptr; // ebx
-		stack[4] = nullptr; // esi
-		stack[5] = nullptr; // edi
-
-		// Setze Stackpointer
-		sp = stack + 1; // zeigt auf "fake return address", die startup(( aufruft
+		struct SetupFrame
+		{
+		unsigned ebx;
+    		unsigned esi;
+    		unsigned edi;
+    		void* ebp;
+    		void (*coroutine)(Coroutine*);
+    		void* return_adresse;
+    		Coroutine* argument;
+		};
+		
+		SetupFrame* frame = reinterpret_cast<SetupFrame*>(
+			static_cast<char*>(tos) - sizeof(SetupFrame)
+		);
+		frame->ebx=0;
+		frame->esi=0;
+		frame->edi=0;
+		frame->ebp=nullptr;
+		frame->coroutine= &Coroutine::startup;
+		frame->return_adresse=nullptr;
+		frame->argument= this;
+		
+		sp= frame; // Der gerettete Stackpointer
+    		
 	}
+protected:
+	/* Der Stackpointer der Coroutine */
+	void* sp;
 
-	void *sp; // Der gerettete Stackpointer
+	
 };
 
 #endif

@@ -1,7 +1,4 @@
-; Ich hab mal den Header weg gelassen weil der irgendwie nicht funktioniert???
-; eventuell sollte hier noch mal etwas verbessert werden
-
-; %include "../machine/csym.inc"	 -- auskommentiert      ; Innerhalb des Include-Files 'csym.inc'
+%include "../machine/csym.inc"	; Innerhalb des Include-Files 'csym.inc'
 				; wird das Macro CSYM(name) definiert,
 				; das dem uebergebenen Symbolnamen in
 				; Abhaegigkeit vom verwendeten Generierungs-
@@ -9,13 +6,13 @@
 
 ; EXPORTIERTE FUNKTIONEN
 
-; csym switchContext       -- auskommentiert
+csym switchContext
 
-; [GLOBAL switchContext]  -- auskommentiert
+[GLOBAL switchContext]
 
 ; IMPLEMENTIERUNG DER FUNKTIONEN
 
-; [SECTION .text]   -- auskommentiert
+[SECTION .text]
 
 ; switchContext: Der Coroutinenwechsel
 ;
@@ -24,36 +21,23 @@
 ;     void switchContext (void*& from, void*& to);
 ;
 
-global switchContext          
-
-section .text
-
 switchContext:
-    ;	fuegt hier Euren Code ein!
+;	fuegt hier Euren Code ein!
+	mov eax, [esp + 4]     ; eax = &from
+    mov ecx, [esp + 8]     ; ecx = &to
 
-    ; Parameter:
-    ; [esp + 4] = from
-    ; [esp + 8] = to
+	push ebp
+    	push edi
+	push esi
+   	push ebx
 
-    ; Register retten
-    push ebp
-    push ebx
-    push esi
-    push edi
+    mov [eax], esp         ; alter Stackpointer =*from  
 
-    ; speichere aktuellen Stackpointer in from
-    mov eax, [esp + 20]     ; eax = Adresse von from
-    lea edx, [esp + 20]     ; aktuelle Adresse auf Stack nach Pushes
-    mov [eax], edx          ; from = esp
+    mov esp, [ecx]         ; hier esp = *to (neuer Kontext)
 
-    ; lade neuen Stackpointer aus to
-    mov eax, [esp + 24]     ; eax = Adresse von to
-    mov esp, [eax]          ; esp = to
-
-    ; Register wiederherstellen (umgekehrte Reihenfolge)
-    pop edi
-    pop esi
     pop ebx
+    pop esi
+    pop edi
     pop ebp
+	ret		; Ruecksprung zum Aufrufer
 
-    ret
