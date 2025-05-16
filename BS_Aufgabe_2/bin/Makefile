@@ -44,11 +44,11 @@ SYSTEM_CC = \
 	device/CgaChar.cc \
 	io/PrintStream.cc \
 	lib/Queue.cc \
-	main.cc 
-	# thread/Activity.cc \
-	# thread/Scheduler.cc\
-	# thread/Dispatcher.cpp \
-	# thread/ActivityScheduler.cc \
+	main.cc \
+	thread/Activity.cc \
+	thread/Scheduler.cc\
+	thread/Dispatcher.cpp \
+	thread/ActivityScheduler.cc \
 	
 
 
