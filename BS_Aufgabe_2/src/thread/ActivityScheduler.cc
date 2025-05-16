@@ -27,7 +27,7 @@ void ActivityScheduler::kill(Activity* act) {
         act->changeTo(Activity::ZOMBIE);
         remove(act);
     }
-
+}
 /* Terminieren des aktiven Prozesses,
  * und Wechsel zum naechsten lauffaehigen Prozess
  */    
@@ -53,6 +53,4 @@ void ActivityScheduler::activate(Schedulable* to) {
     Activity* activityTo = static_cast<Activity*>(to);
     activityTo->changeTo(Activity::RUNNING);
     Dispatcher::dispatch(activityTo);
-}
-
 }
