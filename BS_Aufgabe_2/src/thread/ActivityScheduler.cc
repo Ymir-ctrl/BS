@@ -1,17 +1,6 @@
 #include "thread/ActivityScheduler.h"
 
-ActivityScheduler scheduler;
 
-/**  
- *  Setzt den Zustand der Aktivität danne erst auf READY, damit sie
- *  Fügt die Aktivität der Ready-Liste hinzu und startet sie.
- *  Wird nur einmal aufgerufen.
- */
-void ActivityScheduler::start(Activity* act) {
-    act->changeTo(Activity::READY);
-    schedule(act);
-    activate(act);
-}
 
 /**  
  *  Setzt den Zustand der Aktivität auf BLOCKED, damit sie nicht mehr
@@ -54,11 +43,11 @@ void ActivityScheduler::exit() {
  */
 void ActivityScheduler::activate(Schedulable* to) {
     if (active != nullptr &&
-    active->isBlocked() == 0 &&
-    active->isZombie() == 0) {
-    // setzt den Zustand auf READY und fügt ihn in die Readylist ein
-    active->setState(Activity::READY)
-    Scheduler::schedule(active);
+        active->isBlocked() == 0 &&
+        active->isZombie() == 0) {
+        // setzt den Zustand auf READY und fügt ihn in die Readylist ein
+        active->changeTo(Activity::READY);
+        schedule(active);
     }
 
     Activity* activityTo = static_cast<Activity*>(to);

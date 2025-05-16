@@ -24,6 +24,11 @@ public:
 	 */
 	void start(Activity* act)
 	{
+	act->changeTo(Activity::READY);
+    schedule(act);
+    active = act;    
+	Dispatcher::init(act);     
+    Dispatcher::dispatch(active);
 	}
 
 	/* Suspendieren des aktiven Prozesses
