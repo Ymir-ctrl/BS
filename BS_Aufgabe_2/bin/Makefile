@@ -47,7 +47,6 @@ SYSTEM_CC = \
 	main.cc \
 	thread/Activity.cc \
 	thread/Scheduler.cc\
-	thread/Dispatcher.cpp \
 	thread/ActivityScheduler.cc \
 	
 
