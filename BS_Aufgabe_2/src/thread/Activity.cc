@@ -1,7 +1,7 @@
 #include "thread/Activity.h"
 #include "thread/ActivityScheduler.h"
 
-extern ActivityScheduler scheduler;
+ActivityScheduler scheduler;
 
 //Konstruktor für normale aktivitäten (Stack)
 Activity::Activity(void* tos)
